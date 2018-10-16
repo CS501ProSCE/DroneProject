@@ -11,15 +11,22 @@ Python script to extract raw drone data from Mission Planner output
 import openpyxl as op
 import numpy as np
 import datetime
+import os
 
 
 #change this to name of file - MUST BE in XLS format to work with openpyxl!!
-name = "2018-10-07 13-59-17.csv"
+name = "2018-10-07 13-49-59.csv"
 
-#Define data time parameters
-cuttime = False  #define True if you want to cut to start and stop times
-starttime = "2018-10-07T13:59:54.433"  #Data will start at this time,define as None if no crop desired
-endtime = "2018-10-07T14:01:51.048" #Data will end at this time, define as Non if no end crop desired
+#Define file options
+createspreadsheet = False #define if you want MAVLINK data in spreadsheet form
+
+cuttime = True  #define True if you want to cut to start and stop times
+starttime = "2018-10-07T13:51:42.813"  #Data will start at this time
+endtime = "2018-10-07T13:51:47.972" #Data will end at this time
+
+appenddata = True #This will append a data series, as a row, to requested file
+appendname = "test" #define as "train" or "test"
+
 
 if(cuttime):
     starttime = starttime.replace("T"," ")
@@ -37,7 +44,7 @@ mavlink_types = []
 
 #mavlink_ahrs_t
 mavlink_types.append("mavlink_ahrs_t")
-param = ["timestamp","omegaIx (rad/s)","omegaIy (rad/s)","omegaIz (rad/s)","accel_weight","renorm_val","error_rp","error_yaw"]
+param = ["timestamp","omegaIx","omegaIy","omegaIz","accel_weight","renorm_val","error_rp","error_yaw"]
 index =  [1,12,14,16,18,20,22,24]
 mavlink_param.append(param)
 mavlink_index.append(index)
@@ -187,19 +194,36 @@ for row in filelist:
                         mavlink_data[typ][param].append(float(row[mavlink_index[typ][param]-1]))
                 break                    
 
-#Create new worksheet and output data
-newbook = op.Workbook()
-newbook.remove_sheet(newbook.active)
+if(createspreadsheet):
+    #Create new worksheet and output data
+    newbook = op.Workbook()
+    newbook.remove_sheet(newbook.active)
+    
+    ws = []
+    for typ in range(len(mavlink_types)):
+        ws.append(newbook.create_sheet(mavlink_types[typ]))    
+        for param in range(len(mavlink_param[typ])):
+            ws[typ].cell(row=1,column=param+1).value = mavlink_param[typ][param]
+            for row in range(len(mavlink_data[typ][param])):
+                ws[typ].cell(row=row+2,column=param+1).value = mavlink_data[typ][param][row]      
+    
+    newname =  "Data_" + name.replace("csv","xlsx")    
+    newbook.save(newname)
 
-ws = []
-for typ in range(len(mavlink_types)):
-    ws.append(newbook.create_sheet(mavlink_types[typ]))    
-    for param in range(len(mavlink_param[typ])):
-        ws[typ].cell(row=1,column=param+1).value = mavlink_param[typ][param]
-        for row in range(len(mavlink_data[typ][param])):
-            ws[typ].cell(row=row+2,column=param+1).value = mavlink_data[typ][param][row]      
 
-newname =  "Data_" + name.replace("csv","xlsx")    
-newbook.save(newname)
-
-
+if(appenddata):
+#open data file and write to
+    for typ in range(len(mavlink_types)):
+            for param in range(len(mavlink_param[typ])):
+                filename = appendname + "_" + mavlink_types[typ] + "_" + mavlink_param[typ][param] + ".txt"
+                if os.path.exists(filename):
+                    append_write  = 'a'
+                else:
+                    append_write= 'w'
+                file = open(filename, append_write)
+                file.write(' '.join(map(str,mavlink_data[typ][param])))
+                file.write("\n")
+                file.close()
+                    
+    
+    
