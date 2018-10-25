@@ -4,7 +4,10 @@ Fall 2018
 
 This module contains the algorithms for K-Nearest Neighbor and DTW
 
-source baseline: https://github.com/markdregan/K-Nearest-Neighbors-with-Dynamic-Time-Warping
+Re-used code from: https://github.com/markdregan/K-Nearest-Neighbors-with-Dynamic-Time-Warping
+credit: Mark Dregan
+
+*Some modifications made for implementation in Python3
 
 """
 

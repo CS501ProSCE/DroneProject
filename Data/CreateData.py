@@ -1,6 +1,6 @@
 """
 CS 50100 Group 16
-Tom shaw
+Written by Tom shaw
 
 Python script to create data files from DataDefinition.xlsx data catalog
 1. Modify DataDefinitions.xlsx to define your flight test data
@@ -28,16 +28,19 @@ from MavlinkParameters import mavlink_param
 from MavlinkParameters import mavlink_index
 from MavlinkParameters import mavlink_rate
 
+#Import Data Definition catalog
 book = op.load_workbook("DataDefinitions.xlsx") #This is your data definition spreadsheet
 sheet = book.active
-maxRow = sheet.max_row
+maxRow = sheet.max_row #get number of test slices to import
 
+#initialize 
 filelist = []
 labellist = []
 testtypelist= []
 starttimelist = []
 timelist = []
 
+#read in Data Definition tests
 for row in range(2,maxRow+1):
     filelist.append(sheet.cell(row=row,column=2).value)
     labellist.append(sheet.cell(row=row,column=3).value)
@@ -50,7 +53,7 @@ for row in range(2,maxRow+1):
 #Loop through each test case, read data, write out time slice
 for testnum in range(len(filelist)):
 
-    #Create list stucture
+    #re-initialize list stucture
     mavlink_data = []
     for typ in range(len(mavlink_types)):
         typdata = []
@@ -58,6 +61,7 @@ for testnum in range(len(filelist)):
             typdata.append([]) 
         mavlink_data.append(typdata)    
     
+    #Decompose test 
     startt = datetime.datetime.strptime(starttimelist[testnum].replace("T"," "), '%Y-%m-%d %H:%M:%S.%f')
     testime = int(timelist[testnum])
             

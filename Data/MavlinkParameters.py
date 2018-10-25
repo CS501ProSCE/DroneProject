@@ -1,8 +1,16 @@
+"""
+CS 50100 Group 16
+Written by Tom Shaw
 
-mavlink_param = []
-mavlink_index = []
-mavlink_types = []
-mavlink_rate = []
+Mavlink data parameter definition file. This file controls which parameters are read in for data processing.
+
+"""
+
+
+mavlink_types = [] #name of MAVLINK message type
+mavlink_param = [] #name of individual parameters within MAVLINK message
+mavlink_index = [] #raw MAVLINK data file index corresponding to parameter
+mavlink_rate = []  #rate of data for MAVLINK message. This is needed to determine time to iterations correlation
 
 #mavlink_ahrs_t
 mavlink_types.append("mavlink_ahrs_t")
@@ -140,7 +148,7 @@ mavlink_param.append(param)
 mavlink_index.append(index)
 mavlink_rate.append(rate)
 
-#error check parameters to avoid nasty surprises
+#error check parameter and index sizes are the same to avoid nasty surprises
 for typ in range(len(mavlink_types)):
     if(len(mavlink_param[typ]) != len(mavlink_index[typ])):
         raise ValueError("ERROR: mavlink type " + mavlink_types[typ] + " has mismatched index and param size")

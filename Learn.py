@@ -2,11 +2,15 @@
 CS501 Group 16
 Fall 2018
 
-Thsi module imports the data and executes the algorithms
+Thsi module imports the data and executes the algorithms.
 
-source baseline: https://github.com/markdregan/K-Nearest-Neighbors-with-Dynamic-Time-Warping
+Re-used code from: https://github.com/markdregan/K-Nearest-Neighbors-with-Dynamic-Time-Warping
+credit: Mark Dregan
+
+*Some modifications made for implementation in Python3 and custom data input, plotting
 
 """
+
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -63,42 +67,42 @@ x_test = np.array(x_test)
 y_test = np.array(y_test)
 
 
+#plot train data
 plt.figure(figsize=(11,7))
 colors = ['#D62728','#2C9F2C','#FD7F23','#1F77B4','#9467BD',
-          '#8C564A','#7F7F7F','#1FBECF','#E377C2','#BCBD27']
-
-for i, r in enumerate([0,1,2,3,4,5,6,7,8]):
-    plt.subplot(5,2,i+1)
+          '#8C564A','#7F7F7F','#1FBECF','#E377C2','#BCBD27',
+          '#D62728','#2C9F2C']
+for i, r in enumerate([0,1,2,3,5,6,7,8,9,10,11,12]):
+    plt.subplot(7,2,i+1)
     plt.plot(x_train[r], label=labels[y_train[r]], color=colors[i], linewidth=2)
     plt.xlabel('Samples @50Hz')
     plt.legend(loc='upper left')
     plt.tight_layout()
 
-m = KnnDtw(n_neighbors=1, max_warping_window=100)
-m.fit(x_train, y_train)
-label, proba = m.predict(x_test)
-
+#Plot Test data
 plt.figure(figsize=(11,7))
 colors = ['#D62728','#2C9F2C','#FD7F23','#1F77B4','#9467BD',
           '#8C564A','#7F7F7F','#1FBECF','#E377C2','#BCBD27']
-
-for i, r in enumerate([0,1,2,3]):
-    plt.subplot(2,2,i+1)
+for i, r in enumerate([0,1,2,3,4,5]):
+    plt.subplot(3,2,i+1)
     plt.plot(x_test[r], label=labels[y_test[r]], color=colors[i], linewidth=2)
     plt.xlabel('Samples @50Hz')
     plt.legend(loc='upper left')
     plt.tight_layout()
     
-#Analyze dataset
 from sklearn.metrics import classification_report, confusion_matrix
 print(classification_report(label, y_test,
                             target_names=[l for l in labels.values()]))
 
+#Analyze dataset
+m = KnnDtw(n_neighbors=1, max_warping_window=100)
+m.fit(x_train, y_train)
+label, proba = m.predict(x_test)
 
 #Confusion Matrix
 conf_mat = confusion_matrix(label, y_test)
 
-fig = plt.figure(figsize=(2,2))
+fig = plt.figure(figsize=(3,3))
 width = np.shape(conf_mat)[1]
 height = np.shape(conf_mat)[0]
 
@@ -110,5 +114,5 @@ for i, row in enumerate(conf_mat):
             
 cb = fig.colorbar(res)
 plt.title('Confusion Matrix')
-_ = plt.xticks(range(2), [l for l in labels.values()], rotation=90)
-_ = plt.yticks(range(2), [l for l in labels.values()])
+_ = plt.xticks(range(3), [l for l in labels.values()], rotation=90)
+_ = plt.yticks(range(3), [l for l in labels.values()])
