@@ -1,7 +1,7 @@
 """
 CS501 Group 16
 Fall 2018
-Modified/adapted from code by Thomas Shaw
+Modified/adapted from code baseline by Thomas Shaw
 
 This module imports the data and executes the algorithms.
 
@@ -19,10 +19,12 @@ import numpy as np
 from knndtw import KnnDtw
 from knndtw import ProgressBar
 
-trainingdatafile =  'Data/train_mavlink_raw_imu_t_XGyro.txt'
+dataparam = 'mavlink_attitude_t_yaw angle'
+
+trainingdatafile =  'Data/train_' + dataparam + '.txt'
 traininglabelfile = 'Data/train_labels.txt'
 
-testdatafile =  'Data/test_mavlink_raw_imu_t_XGyro.txt'
+testdatafile =  'Data/test_' + dataparam + '.txt'
 testlabelfile = 'Data/test_labels.txt'
 
 # Import the HAR dataset
@@ -116,7 +118,9 @@ for i, row in enumerate(conf_mat):
         if c>0:
             plt.text(j-.2, i+.1, c, fontsize=16)
             
-cb = fig.colorbar(res)
-plt.title('Confusion Matrix')
+#cb = fig.colorbar(res)
+plt.title('Confusion Matrix for ' + dataparam)
+plt.xlabel('Data')
+plt.ylabel('ML Identification')
 _ = plt.xticks(range(3), [l for l in labels.values()], rotation=90)
 _ = plt.yticks(range(3), [l for l in labels.values()])
