@@ -1,8 +1,9 @@
 """
 CS501 Group 16
 Fall 2018
+Modified/adapted from code baseline by Thomas Shaw
 
-Thsi module imports the data and executes the algorithms.
+This module imports the data and executes the algorithms.
 
 Re-used code from: https://github.com/markdregan/K-Nearest-Neighbors-with-Dynamic-Time-Warping
 credit: Mark Dregan
@@ -18,10 +19,12 @@ import numpy as np
 from knndtw import KnnDtw
 from knndtw import ProgressBar
 
-trainingdatafile =  'Data/train_mavlink_raw_imu_t_ZGyro.txt'
+dataparam = 'mavlink_attitude_t_yaw angle'
+
+trainingdatafile =  'Data/train_' + dataparam + '.txt'
 traininglabelfile = 'Data/train_labels.txt'
 
-testdatafile =  'Data/test_mavlink_raw_imu_t_ZGyro.txt'
+testdatafile =  'Data/test_' + dataparam + '.txt'
 testlabelfile = 'Data/test_labels.txt'
 
 # Import the HAR dataset
@@ -90,14 +93,17 @@ for i, r in enumerate([0,1,2,3,4,5]):
     plt.legend(loc='upper left')
     plt.tight_layout()
     
-from sklearn.metrics import classification_report, confusion_matrix
-print(classification_report(label, y_test,
-                            target_names=[l for l in labels.values()]))
 
 #Analyze dataset
 m = KnnDtw(n_neighbors=1, max_warping_window=100)
 m.fit(x_train, y_train)
 label, proba = m.predict(x_test)
+
+#Classification report
+from sklearn.metrics import classification_report, confusion_matrix
+print(classification_report(label, y_test,
+                            target_names=[l for l in labels.values()]))
+
 
 #Confusion Matrix
 conf_mat = confusion_matrix(label, y_test)
@@ -112,7 +118,9 @@ for i, row in enumerate(conf_mat):
         if c>0:
             plt.text(j-.2, i+.1, c, fontsize=16)
             
-cb = fig.colorbar(res)
-plt.title('Confusion Matrix')
+#cb = fig.colorbar(res)
+plt.title('Confusion Matrix for ' + dataparam)
+plt.xlabel('Data')
+plt.ylabel('ML Identification')
 _ = plt.xticks(range(3), [l for l in labels.values()], rotation=90)
 _ = plt.yticks(range(3), [l for l in labels.values()])
