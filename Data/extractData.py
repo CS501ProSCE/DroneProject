@@ -1,6 +1,8 @@
 
 """
 CS 50100 Group 16
+Written by Thomas Shaw
+
 Python script to extract raw drone data from Mission Planner output
 
 1. input csv file name
