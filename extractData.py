@@ -21,17 +21,16 @@ from MavlinkParameters import mavlink_param
 from MavlinkParameters import mavlink_index
 
 #change this to name of file - MUST BE in XLS format to work with openpyxl!!
-name = "2018-10-07 13-49-59.csv"
+path = 'Data2/'
+name = "2018-11-08 16-25-11.csv"
+fullpath = path + name
 
 #Define file options
-createspreadsheet = False #define if you want MAVLINK data in spreadsheet form
+createspreadsheet = True #define if you want MAVLINK data in spreadsheet form
 
 cuttime = True  #define True if you want to cut to start and stop times
-starttime = "2018-10-07T13:51:42.813"  #Data will start at this time
-endtime = "2018-10-07T13:51:47.972" #Data will end at this time
-
-appenddata = True #This will append a data series, as a row, to requested file
-appendname = "test" #define as "train" or "test"
+starttime = "2018-11-08T16:26:31.350"  #Data will start at this time
+endtime = "2018-11-08T16:31:27.511" #Data will end at this time
 
 
 if(cuttime):
@@ -39,7 +38,7 @@ if(cuttime):
     endtime = endtime.replace("T"," ")
     startt = datetime.datetime.strptime(starttime, '%Y-%m-%d %H:%M:%S.%f')
     endt = datetime.datetime.strptime(endtime, '%Y-%m-%d %H:%M:%S.%f')
-    print("This will process file %s"%(name))
+    print("This will process file %s"%(fullpath))
     print("The data will start at %s"%(startt))
     print("The data will end at %s"%(endt))
     print("\n")
@@ -63,7 +62,7 @@ for typ in range(len(mavlink_types)):
 
 #read raw data file
 filelist = []
-with open(name) as f: 
+with open(fullpath) as f: 
     for line in f:
         filelist.append(line.split(','))
 f.close()
@@ -104,24 +103,9 @@ if(createspreadsheet):
             for row in range(len(mavlink_data[typ][param])):
                 ws[typ].cell(row=row+2,column=param+1).value = mavlink_data[typ][param][row]      
     
-    newname =  "Data_" + name.replace("csv","xlsx")    
+    newname =  path + "Data_" + name.replace("csv","xlsx")    
     newbook.save(newname)
 
-
-if(appenddata):
-#open data file and write to
-    for typ in range(len(mavlink_types)):
-            for param in range(len(mavlink_param[typ])):
-                filename = appendname + "_" + mavlink_types[typ] + "_" + mavlink_param[typ][param] + ".txt"
-                if os.path.exists(filename):
-                    append_write  = 'a'
-                else:
-                    append_write= 'w'
-                file = open(filename, append_write)
-                file.write(' '.join(map(str,mavlink_data[typ][param])))
-                file.write("\n")
-                file.close()
-                    
     
 #calculate statistics
 for typ in range(len(mavlink_types)):

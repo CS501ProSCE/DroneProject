@@ -19,13 +19,14 @@ import numpy as np
 from knndtw import KnnDtw
 from knndtw import ProgressBar
 
+dataset = 'Data/'
 dataparam = 'mavlink_attitude_t_yaw angle'
 
-trainingdatafile =  'Data/train_' + dataparam + '.txt'
-traininglabelfile = 'Data/train_labels.txt'
+trainingdatafile =  dataset + 'train_' + dataparam + '.txt'
+traininglabelfile = dataset + 'train_labels.txt'
 
-testdatafile =  'Data/test_' + dataparam + '.txt'
-testlabelfile = 'Data/test_labels.txt'
+testdatafile =  dataset + 'test_' + dataparam + '.txt'
+testlabelfile = dataset + 'test_labels.txt'
 
 # Import the HAR dataset
 x_train_file = open(trainingdatafile, 'r')
