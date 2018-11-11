@@ -28,8 +28,11 @@ from MavlinkParameters import mavlink_param
 from MavlinkParameters import mavlink_index
 from MavlinkParameters import mavlink_rate
 
+dataset = 'Data2/'
+
 #Import Data Definition catalog
-book = op.load_workbook("DataDefinitions.xlsx") #This is your data definition spreadsheet
+wbpath = dataset + 'DataDefinitions.xlsx'
+book = op.load_workbook(wbpath) #This is your data definition spreadsheet
 sheet = book.active
 maxRow = sheet.max_row #get number of test slices to import
 
@@ -48,7 +51,7 @@ for row in range(2,maxRow+1):
     starttimelist.append(sheet.cell(row=row,column=5).value)
     timelist.append(sheet.cell(row=row,column=6).value)
     
-
+print('DataDefinition has %i data samples to process' %(len(filelist)))
        
 #Loop through each test case, read data, write out time slice
 for testnum in range(len(filelist)):
@@ -67,7 +70,8 @@ for testnum in range(len(filelist)):
             
     #read raw data file
     filelines = []
-    with open(filelist[testnum]) as f: 
+    datapath = dataset + filelist[testnum]
+    with open(datapath) as f: 
         for line in f:
             filelines.append(line.split(','))
     f.close()
@@ -99,7 +103,7 @@ for testnum in range(len(filelist)):
             
         for param in range(len(mavlink_param[typ])):
             #write to data file (X axis)
-            filename = testtypelist[testnum].lower() + "_" + mavlink_types[typ] + "_" + mavlink_param[typ][param] + ".txt"
+            filename = dataset + testtypelist[testnum].lower() + "_" + mavlink_types[typ] + "_" + mavlink_param[typ][param] + ".txt"
             if os.path.exists(filename):
                 append_write  = 'a'
             else:
@@ -110,7 +114,7 @@ for testnum in range(len(filelist)):
             file.close()  
             
     #write to label file (Y axis) for each test
-    labelfilename = testtypelist[testnum].lower() + "_labels.txt"
+    labelfilename = dataset + testtypelist[testnum].lower() + "_labels.txt"
     if os.path.exists(labelfilename):
         append_write  = 'a'
     else:
@@ -120,7 +124,7 @@ for testnum in range(len(filelist)):
     file.write("\n")
     file.close()              
           
-
+print('Data generation is complete')
 
     
     
