@@ -18,9 +18,10 @@ import numpy as np
 
 from knndtw import KnnDtw
 from knndtw import ProgressBar
+from k_fold_cv import k_fold_cross_val
 
-dataset = 'Data/'
-dataparam = 'mavlink_attitude_t_yaw angle'
+dataset = 'Data2/'
+dataparam = 'mavlink_raw_imu_t_XGyro'
 
 trainingdatafile =  dataset + 'train_' + dataparam + '.txt'
 traininglabelfile = dataset + 'train_labels.txt'
@@ -42,7 +43,8 @@ x_test = []
 y_test = []
 
 # Mapping table for classes
-labels = {1:'Hover', 2:'Impact (tapping)', 3:'Wind'}
+labels = {1:'Hover', 2:'Impact (Front Left)', 3:'Impact (Front Right)', 4:'Impact (Back Left)', 5:'Impact (Back Right)', 
+          6:'Gust (from Left)', 7:'Gust (from Right)' }
 
 # Loop through datasets
 for x in x_train_file:
@@ -87,8 +89,8 @@ for i, r in enumerate([0,1,2,3,5,6,7,8,9,10,11,12]):
 plt.figure(figsize=(11,7))
 colors = ['#D62728','#2C9F2C','#FD7F23','#1F77B4','#9467BD',
           '#8C564A','#7F7F7F','#1FBECF','#E377C2','#BCBD27']
-for i, r in enumerate([0,1,2,3,4,5]):
-    plt.subplot(3,2,i+1)
+for i, r in enumerate([0,1,2,3,4,5,6,7,8,9]):
+    plt.subplot(5,2,i+1)
     plt.plot(x_test[r], label=labels[y_test[r]], color=colors[i], linewidth=2)
     plt.xlabel('Samples @50Hz')
     plt.legend(loc='upper left')
@@ -96,7 +98,7 @@ for i, r in enumerate([0,1,2,3,4,5]):
     
 
 #Analyze dataset
-m = KnnDtw(n_neighbors=1, max_warping_window=100)
+m = KnnDtw(n_neighbors=1, max_warping_window=500)
 m.fit(x_train, y_train)
 label, proba = m.predict(x_test)
 
@@ -109,7 +111,7 @@ print(classification_report(label, y_test,
 #Confusion Matrix
 conf_mat = confusion_matrix(label, y_test)
 
-fig = plt.figure(figsize=(3,3))
+fig = plt.figure(figsize=(7,7))
 width = np.shape(conf_mat)[1]
 height = np.shape(conf_mat)[0]
 
@@ -123,5 +125,12 @@ for i, row in enumerate(conf_mat):
 plt.title('Confusion Matrix for ' + dataparam)
 plt.xlabel('Data')
 plt.ylabel('ML Identification')
-_ = plt.xticks(range(3), [l for l in labels.values()], rotation=90)
-_ = plt.yticks(range(3), [l for l in labels.values()])
+_ = plt.xticks(range(7), [l for l in labels.values()], rotation=90)
+_ = plt.yticks(range(7), [l for l in labels.values()])
+
+
+#K-Fold Cross validation
+#k_fold_cross_val([1,2,3],x_train,y_train,2)
+
+
+
