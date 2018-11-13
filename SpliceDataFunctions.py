@@ -1,7 +1,10 @@
 # CS 501 Group 16 Scrips of relevant funcitons #
+# Ashley Dicks
 
 from matplotlib import pyplot
 import numpy as np
+import datetime
+import os
 
 # get TS data from file
 def getTSData(file_name):
@@ -77,13 +80,26 @@ def plotTSData(ts_data):
     pyplot.show()
 
 # need to save data in files or a way to use with learn.py
+def saveAnom(para_name,eq_anom):
+    # param_name = file_name[:-4] # remove the .csv from name (switched to user specify para name)
+    filename = "test_mavlink_" + str(para_name) + ".txt"
+    if os.path.exists(filename):
+        os.remove(filename) # remove if already exists
+    file = open(filename, 'w')
+    for i in range(len(eq_anom)):
+        file.write(' '.join(map(str,eq_anom[i])))
+        file.write("\n")
+    file.close()
+    print("Disturbances successfully saved as "+filename)
 
 # example of main calling these funcitons in correct order    
 def main():
-    file_name = input("Name of CSV file:")
+    file_name = input("Name of CSV file:") # tap_front_left_xgyro.csv
+    para_name = input("Name of parameter to be used:")
     ts_data = getTSData(file_name)
     clean_data = cleanTSData(ts_data)
     anom = parseData(clean_data)
     eq_anom = anomLen(anom)
-    plotTSData(ts_data)
+    # plotTSData(ts_data)
+    saveAnom(para_name,eq_anom)
 
