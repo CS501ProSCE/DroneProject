@@ -60,6 +60,37 @@ def parseData(data):
         array.append(newArray)
     return array
 
+# manually select individual anomalies from TS data
+def manParseData(data):
+    x_pts = []
+    y_pts = []
+    fig, ax = pyplot.subplots(figsize=(15,7))
+    ax.plot(data)
+    pyplot.title("Time Series for UAV Anomalies", size=20)
+    txt = "INSTRUCTIONS: Click on points inbetween each anomaly viewed, starting at the front of the first anomaly and ending at the end of the last anomaly. EXIT when done! "
+    fig.text(.5, .05, txt, ha='center')
+    line, = ax.plot(x_pts, y_pts, marker="o")
+    # function used for manual selection
+    def onpick(event):
+        m_x, m_y = event.x, event.y
+        x, y = ax.transData.inverted().transform([m_x, m_y])
+        x_pts.append(x)
+        y_pts.append(y)
+        line.set_xdata(x_pts)
+        line.set_ydata(y_pts)
+        fig.canvas.draw()
+    fig.canvas.mpl_connect('button_press_event', onpick)
+    pyplot.show()
+    index_x = [int(x_pts[i]) for i in range(len(x_pts))]
+    anoms = []
+    # create n new array for anamoly ts from dataset
+    for i in range(0,len(index_x)-1):
+        # x_pts are where anomalies begin and end
+        start = index_x[i]
+        end = index_x[i+1]
+        anoms.append(data[start:end])
+    return anoms
+
 # goes through anomalies and creates each subset to be the same length
 def anomLen(anom):
     lens = []
@@ -97,9 +128,10 @@ def main():
     file_name = input("Name of CSV file:") # tap_front_left_xgyro.csv
     para_name = input("Name of parameter to be used:")
     ts_data = getTSData(file_name)
-    clean_data = cleanTSData(ts_data)
-    anom = parseData(clean_data)
-    eq_anom = anomLen(anom)
+    clean_data = cleanTSData(ts_data)    
+    #anom = parseData(clean_data) ## EXAMPLE for automatic
+    anom = manParseData(clean_data)  ## EXAMPLE for manual anomaly selection
+    eq_anom = anomLen(anom)   
     # plotTSData(ts_data)
     saveAnom(para_name,eq_anom)
 
