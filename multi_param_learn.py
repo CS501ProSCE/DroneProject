@@ -58,8 +58,9 @@ def multi_param_learn(param_list,param_weights,datapath):
         y_test = []
     
         # Mapping table for classes
-        labels = {1:'Hover', 2:'Impact (tapping)', 3:'Wind'}
-    
+        labels = {1:'Hover', 2:'Impact (Front Left)', 3:'Impact (Front Right)', 4:'Impact (Back Left)', 5:'Impact (Back Right)', 
+                  6:'Gust (from Left)', 7:'Gust (from Right)', 8: 'Gust (from front)' }
+            
         i = 0
         # Loop through datasets
         for x in x_train_file:
@@ -143,7 +144,7 @@ def multi_param_learn(param_list,param_weights,datapath):
     #Confusion Matrix
     conf_mat = confusion_matrix(para_mode, y_test)
     
-    fig = plt.figure(figsize=(3,3))
+    fig = plt.figure(figsize=(8,8))
     width = np.shape(conf_mat)[1]
     height = np.shape(conf_mat)[0]
     
@@ -157,8 +158,8 @@ def multi_param_learn(param_list,param_weights,datapath):
     plt.title('Confusion Matrix for ' + ', '.join([name for name in param_list]))
     plt.xlabel('Data')
     plt.ylabel('ML Identification')
-    _ = plt.xticks(range(3), [l for l in labels.values()], rotation=90)
-    _ = plt.yticks(range(3), [l for l in labels.values()])
+    _ = plt.xticks(range(9), [l for l in labels.values()], rotation=90)
+    _ = plt.yticks(range(9), [l for l in labels.values()])
 #testing
 #plist = ['mavlink_raw_imu_t_Xaccel','mavlink_raw_imu_t_Zaccel']
 #multi_param_learn(plist,None)
