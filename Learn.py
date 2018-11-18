@@ -23,6 +23,11 @@ from k_fold_cv import k_fold_cross_val
 dataset = 'Data2/'
 dataparam = 'mavlink_raw_imu_t_XGyro'
 
+plotdata = False
+
+#get time for computatoin length
+timestartalg = datetime.datetime.now()
+
 trainingdatafile =  dataset + 'train_' + dataparam + '.txt'
 traininglabelfile = dataset + 'train_labels.txt'
 
@@ -44,7 +49,7 @@ y_test = []
 
 # Mapping table for classes
 labels = {1:'Hover', 2:'Impact (Front Left)', 3:'Impact (Front Right)', 4:'Impact (Back Left)', 5:'Impact (Back Right)', 
-          6:'Gust (from Left)', 7:'Gust (from Right)' }
+          6:'Gust (from Left)', 7:'Gust (from Right)', 8: 'Gust (from front)' }
 
 # Loop through datasets
 for x in x_train_file:
@@ -74,32 +79,34 @@ y_test = np.array(y_test)
 
 
 #plot train data
-plt.figure(figsize=(11,7))
-colors = ['#D62728','#2C9F2C','#FD7F23','#1F77B4','#9467BD',
-          '#8C564A','#7F7F7F','#1FBECF','#E377C2','#BCBD27',
-          '#D62728','#2C9F2C']
-for i, r in enumerate([0,1,2,3,5,6,7,8,9,10,11,12]):
-    plt.subplot(7,2,i+1)
-    plt.plot(x_train[r], label=labels[y_train[r]], color=colors[i], linewidth=2)
-    plt.xlabel('Samples @50Hz')
-    plt.legend(loc='upper left')
-    plt.tight_layout()
+if(plotdata):
+    plt.figure(figsize=(11,7))
+    colors = ['#D62728','#2C9F2C','#FD7F23','#1F77B4','#9467BD',
+              '#8C564A','#7F7F7F','#1FBECF','#E377C2','#BCBD27',
+              '#D62728','#2C9F2C']
+    for i, r in enumerate([0,1,2,3,5,6,7,8,9,10,11,12]):
+        plt.subplot(7,2,i+1)
+        plt.plot(x_train[r], label=labels[y_train[r]], color=colors[i], linewidth=2)
+        plt.xlabel('Samples @50Hz')
+        plt.legend(loc='upper left')
+        plt.tight_layout()
 
 #Plot Test data
-plt.figure(figsize=(11,7))
-colors = ['#D62728','#2C9F2C','#FD7F23','#1F77B4','#9467BD',
-          '#8C564A','#7F7F7F','#1FBECF','#E377C2','#BCBD27']
-for i, r in enumerate([0,1,2,3,4,5,6,7,8,9]):
-    plt.subplot(5,2,i+1)
-    plt.plot(x_test[r], label=labels[y_test[r]], color=colors[i], linewidth=2)
-    plt.xlabel('Samples @50Hz')
-    plt.legend(loc='upper left')
-    plt.tight_layout()
-    
+if(plotdata):
+    plt.figure(figsize=(11,7))
+    colors = ['#D62728','#2C9F2C','#FD7F23','#1F77B4','#9467BD',
+              '#8C564A','#7F7F7F','#1FBECF','#E377C2','#BCBD27']
+    for i, r in enumerate([0,1,2,3,4,5,6,7,8,9]):
+        plt.subplot(5,2,i+1)
+        plt.plot(x_test[r], label=labels[y_test[r]], color=colors[i], linewidth=2)
+        plt.xlabel('Samples @50Hz')
+        plt.legend(loc='upper left')
+        plt.tight_layout()
+        
 
 #Analyze dataset
-m = KnnDtw(n_neighbors=1, max_warping_window=500)
-m.fit(x_train, y_train)
+m = KnnDtw(n_neighbors=2, max_warping_window=100)
+m.fit(x_train,y_train)
 label, proba = m.predict(x_test)
 
 #Classification report
@@ -129,8 +136,11 @@ _ = plt.xticks(range(7), [l for l in labels.values()], rotation=90)
 _ = plt.yticks(range(7), [l for l in labels.values()])
 
 
-#K-Fold Cross validation
-#k_fold_cross_val([1,2,3],x_train,y_train,2)
+#get end time for computatoin length and compute total run time
+timeendalg = datetime.datetime.now()
+runtime = timeendalg - timestartalg
+print('total algorithm computation time was %f seconds' % (runtime.total_seconds()))
+
 
 
 
