@@ -26,18 +26,21 @@ from knndtw import ProgressBar
 from scipy import stats
 
 from k_fold_cv import k_fold_cross_val
+
+
+
 "let's try to create a feature vector with multiple parameters"
-def multi_param_learn(param_list,param_weights):
+def multi_param_learn(param_list,param_weights,datapath):
     #param_list = ['mavlink_raw_imu_t_Xaccel','mavlink_raw_imu_t_Zaccel'] #for testing
 
     #this is the list that will store labels returned from each param before aggregating 
     param_labels = []
     for dataparam in param_list:
-        trainingdatafile =  'Data/train_' + dataparam + '.txt'
-        traininglabelfile = 'Data/train_labels.txt'
+        trainingdatafile =  datapath + 'train_' + dataparam + '.txt'
+        traininglabelfile = datapath + 'train_labels.txt'
      
-        testdatafile =  'Data/test_' + dataparam + '.txt'
-        testlabelfile = 'Data/test_labels.txt'
+        testdatafile =  datapath + 'test_' + dataparam + '.txt'
+        testlabelfile = datapath + 'test_labels.txt'
     
         # Open training data file, x:data, y:label
         x_train_file = open(trainingdatafile, 'r')
