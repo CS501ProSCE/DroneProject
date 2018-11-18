@@ -56,6 +56,9 @@ print('DataDefinition has %i data samples to process' %(len(filelist)))
 #Loop through each test case, read data, write out time slice
 for testnum in range(len(filelist)):
 
+    print('processing test %i' % (testnum))
+    print('timestamp is %s' % (starttimelist[testnum]))
+    
     #re-initialize list stucture
     mavlink_data = []
     for typ in range(len(mavlink_types)):
