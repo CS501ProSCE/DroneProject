@@ -146,8 +146,8 @@ def multi_param_learn(param_list,param_weights,datapath):
             #para_mode = np.reshape(para_mode,(para_mode.shape[1],))
         
     #Using mode to see which classification was the most frequent for each data from all parameters used
-    k_val = list(range(1,11))
-    k_fold_cross_val(k_val,x_train,y_train,6)
+    #k_val = list(range(1,11))
+    #k_fold_cross_val(k_val,x_train,y_train,6)
         
     
     #Classification report
@@ -182,7 +182,7 @@ def multi_param_learn(param_list,param_weights,datapath):
     _ = plt.xticks(range(9), [l for l in labels.values()], rotation=90)
     _ = plt.yticks(range(9), [l for l in labels.values()])
 #testing
-plist = ['mavlink_raw_imu_t_ZGyro']#,'mavlink_raw_imu_t_Zaccel']
+plist = ['mavlink_raw_imu_t_Zaccel']#,'mavlink_raw_imu_t_Zaccel']
 #pw = [5,4]
 
 multi_param_learn(plist,None,'Data2/')
