@@ -31,11 +31,16 @@ from k_fold_cv import k_fold_cross_val
 
 "let's try to create a feature vector with multiple parameters"
 def multi_param_learn(param_list,param_weights,datapath):
-    #param_list = ['mavlink_raw_imu_t_Xaccel','mavlink_raw_imu_t_Zaccel'] #for testing
-
+    
+    
     #this is the list that will store labels returned from each param before aggregating 
     param_labels = []
+    if param_weights != None:
+        if len(param_list) != len(param_weights):
+            raise Exception('When using weights, there must one weight for each parameter!')
+        para_weights = dict(zip(param_list,param_weights))
     for dataparam in param_list:
+        
         trainingdatafile =  datapath + 'train_' + dataparam + '.txt'
         traininglabelfile = datapath + 'train_labels.txt'
      
@@ -115,18 +120,34 @@ def multi_param_learn(param_list,param_weights,datapath):
         #    plt.tight_layout()
         
         #Analyze dataset
-        m = KnnDtw(n_neighbors=1, max_warping_window=100)
+        m = KnnDtw(n_neighbors=3, max_warping_window=100)
         m.fit(x_train, y_train)
         label, proba = m.predict(x_test)
+        #get the weight for this parameter
+        if param_weights == None:
+            param_labels.append(label) #if we don't have weights do this
+        else:
+            weight = [para_weights[dataparam]]
+            param_labels.append(list(zip(label,weight*len(label))))#a tuple list of (label, weight)
         
-        param_labels.append(label)
         
     param_labels = np.array(param_labels)
-    para_mode, para_count = stats.mode(param_labels)
-    para_mode = np.reshape(para_mode,(para_mode.shape[1],))
+    if param_weights == None:
+        para_mode, para_count = stats.mode(param_labels)
+        para_mode = np.reshape(para_mode,(para_mode.shape[1],))
+    else: #for weights
+        para_mode = [0]*param_labels.shape[1]
+        for i in range(param_labels.shape[1]):
+            mode_count = [0]*len(labels) #an array representing how frequent each label was used to classify a time series
+            col = param_labels[:,i]
+            for p in col:
+                mode_count[p[0]-1] += p[1]
+            para_mode[i] = mode_count.index(max(mode_count)) + 1 #the the label that was used most frequently as the overall label
+            #para_mode = np.reshape(para_mode,(para_mode.shape[1],))
+        
     #Using mode to see which classification was the most frequent for each data from all parameters used
-    
-    
+    k_val = list(range(1,11))
+    k_fold_cross_val(k_val,x_train,y_train,6)
         
     
     #Classification report
@@ -161,5 +182,7 @@ def multi_param_learn(param_list,param_weights,datapath):
     _ = plt.xticks(range(9), [l for l in labels.values()], rotation=90)
     _ = plt.yticks(range(9), [l for l in labels.values()])
 #testing
-#plist = ['mavlink_raw_imu_t_Xaccel','mavlink_raw_imu_t_Zaccel']
-#multi_param_learn(plist,None)
+plist = ['mavlink_raw_imu_t_ZGyro']#,'mavlink_raw_imu_t_Zaccel']
+#pw = [5,4]
+
+multi_param_learn(plist,None,'Data2/')
