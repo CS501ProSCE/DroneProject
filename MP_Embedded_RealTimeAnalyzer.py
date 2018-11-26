@@ -14,6 +14,26 @@ This script reads temporary data from EmbeddedDataTemp.csv and does several thin
         to both files.
     - Opens a seperate thread to process the most recent impact through the kNN/DTW classifier, without interfering
         with data capture rates.
+        BR,BL,FL,FR
+        time
+time
+xgyro
+ygyro
+zgyro
+xacc
+yacc
+zacc
+pitch
+roll
+yaw
+navroll
+navpitch
+navbearing
+rollinput
+pitchinput
+throttleinput
+
+
 """
 import time
 from threading import Thread
@@ -22,6 +42,7 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from matplotlib import style
 import csv
+#from multi_param_learn import multi_param_learn
 
 os.chdir("C:\Program Files (x86)\Mission Planner")
 style.use('fivethirtyeight')
@@ -36,7 +57,7 @@ line, = ax.plot([], [])
 eventList = [[]]
 paramList = [["time(ms)"],["xGyro"],["yGyro"],["zGyro"],["xAcc"],["yAcc"],["zAcc"],["pitch"],["roll"],["yaw"],["navRoll"],["navPitch"],["navBearing"],["rollInput"],["pitchInput"],["throttleInput"]]
 sampleRate = 20
-thresholdSetting = 2000
+thresholdSetting = 1500
 impactCounter = 0
 eventArray = [[0],[0],[0],[0],[0],[0],[0],[0],[0],[0],[0],[0],[0],[0],[0],[0]] #zeros required for proper initializing
 
@@ -58,7 +79,7 @@ def animate(i): #this function is the main plotting loop, as well as other main 
             x1 = x[maxIndex-10:maxIndex+20]
             bx.clear()
             bx.plot(x1,y1)
-            if eventArray[-16][0] != x1[0]: #tihs if statement writes to the eventArray (trimmed data)
+            if eventArray[-16][0] != x1[0]: #this if statement writes to the eventArray (trimmed data)
                 for i in range(0, len(paramList)):
                     data[i] = data[i][maxIndex-10:maxIndex+20]
                     eventArray.append(data[i])
