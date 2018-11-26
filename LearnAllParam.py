@@ -86,7 +86,7 @@ for typ in range(1,len(mavlink_types)):
         
         
         #Analyze dataset
-        m = KnnDtw(n_neighbors=1, max_warping_window=500)
+        m = KnnDtw(n_neighbors=3, max_warping_window=500)
         m.fit(x_train[::trainsample], y_train)
         label, proba = m.predict(x_test)
         
@@ -113,8 +113,8 @@ for typ in range(1,len(mavlink_types)):
         plt.title('Confusion Matrix for ' + dataparam)
         plt.xlabel('Data')
         plt.ylabel('ML Identification')
-        _ = plt.xticks(range(7), [l for l in labels.values()], rotation=90)
-        _ = plt.yticks(range(7), [l for l in labels.values()])
+        _ = plt.xticks(range(8), [l for l in labels.values()], rotation=90)
+        _ = plt.yticks(range(8), [l for l in labels.values()])
 
 
 #get end time for computatoin length and compute total run time
