@@ -21,7 +21,7 @@ from knndtw import ProgressBar
 from k_fold_cv import k_fold_cross_val
 
 dataset = 'Data2/'
-dataparam = 'mavlink_raw_imu_t_XGyro'
+dataparam = 'mavlink_raw_imu_t_YMag'
 
 plotdata = False
 
@@ -105,7 +105,7 @@ if(plotdata):
         
 
 #Analyze dataset
-m = KnnDtw(n_neighbors=2, max_warping_window=100)
+m = KnnDtw(n_neighbors=1, max_warping_window=500)
 m.fit(x_train,y_train)
 label, proba = m.predict(x_test)
 
@@ -118,7 +118,7 @@ print(classification_report(label, y_test,
 #Confusion Matrix
 conf_mat = confusion_matrix(label, y_test)
 
-fig = plt.figure(figsize=(7,7))
+fig = plt.figure(figsize=(8,8))
 width = np.shape(conf_mat)[1]
 height = np.shape(conf_mat)[0]
 
@@ -132,8 +132,8 @@ for i, row in enumerate(conf_mat):
 plt.title('Confusion Matrix for ' + dataparam)
 plt.xlabel('Data')
 plt.ylabel('ML Identification')
-_ = plt.xticks(range(7), [l for l in labels.values()], rotation=90)
-_ = plt.yticks(range(7), [l for l in labels.values()])
+_ = plt.xticks(range(8), [l for l in labels.values()], rotation=90)
+_ = plt.yticks(range(8), [l for l in labels.values()])
 
 
 #get end time for computatoin length and compute total run time
