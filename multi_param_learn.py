@@ -20,7 +20,7 @@ credit: Mark Dregan
 
 import matplotlib.pyplot as plt
 import numpy as np
-
+import time
 from knndtw import KnnDtw
 from knndtw import ProgressBar
 from scipy import stats
@@ -32,7 +32,7 @@ from k_fold_cv import k_fold_cross_val
 "let's try to create a feature vector with multiple parameters"
 def multi_param_learn(param_list,param_weights,datapath):
     
-    
+    start_time = time.time()
     #this is the list that will store labels returned from each param before aggregating 
     param_labels = []
     if param_weights != None:
@@ -120,7 +120,7 @@ def multi_param_learn(param_list,param_weights,datapath):
         #    plt.tight_layout()
         
         #Analyze dataset
-        m = KnnDtw(n_neighbors=3, max_warping_window=100)
+        m = KnnDtw(n_neighbors=4, max_warping_window=100)
         m.fit(x_train, y_train)
         label, proba = m.predict(x_test)
         #get the weight for this parameter
@@ -136,12 +136,12 @@ def multi_param_learn(param_list,param_weights,datapath):
         para_mode, para_count = stats.mode(param_labels)
         para_mode = np.reshape(para_mode,(para_mode.shape[1],))
     else: #for weights
-        para_mode = [0]*param_labels.shape[1]
+        para_mode = [0]*param_labels.shape[1] #a zero array to represent final label value
         for i in range(param_labels.shape[1]):
             mode_count = [0]*len(labels) #an array representing how frequent each label was used to classify a time series
             col = param_labels[:,i]
             for p in col:
-                mode_count[p[0]-1] += p[1]
+                mode_count[int(p[0]-1)] += p[1]
             para_mode[i] = mode_count.index(max(mode_count)) + 1 #the the label that was used most frequently as the overall label
             #para_mode = np.reshape(para_mode,(para_mode.shape[1],))
         
@@ -158,9 +158,10 @@ def multi_param_learn(param_list,param_weights,datapath):
         train/test data for all param are from the same time period!
     """
     from sklearn.metrics import classification_report, confusion_matrix
-    print(classification_report(para_mode, y_test,
+    from sklearn.metrics import precision_recall_fscore_support as score
+    print(classification_report(y_test, para_mode,
                                 target_names=[l for l in labels.values()]))
-    
+
     
     #Confusion Matrix
     conf_mat = confusion_matrix(para_mode, y_test)
@@ -181,8 +182,15 @@ def multi_param_learn(param_list,param_weights,datapath):
     plt.ylabel('ML Identification')
     _ = plt.xticks(range(9), [l for l in labels.values()], rotation=90)
     _ = plt.yticks(range(9), [l for l in labels.values()])
+    #print how long this function ran
+    print("Runtime was %s seconds" % (time.time() - start_time))
 #testing
 plist = ['mavlink_raw_imu_t_Zaccel']#,'mavlink_raw_imu_t_Zaccel']
-#pw = [5,4]
+#pw = 
 
-multi_param_learn(plist,None,'Data2/')
+multi_param_learn(['mavlink_raw_imu_t_XMag','mavlink_attitude_t_yaw angle'],[0.2,0.3] ,'Data2/')
+#multi_param_learn(['mavlink_raw_imu_t_Xaccel'],None,'Data2/')
+#multi_param_learn(['mavlink_raw_imu_t_Yaccel'],None,'Data2/')
+#multi_param_learn(['mavlink_raw_imu_t_ZGyro'],None,'Data2/')
+#multi_param_learn(['mavlink_raw_imu_t_XGyro'],None,'Data2/')
+#multi_param_learn(['mavlink_raw_imu_t_YGyro'],None,'Data2/')
