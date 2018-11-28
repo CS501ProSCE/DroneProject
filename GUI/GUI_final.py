@@ -5,30 +5,27 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QApplication, QWidget, QInputDialog, QLineEdit, QFileDialog
 from matplotlib.figure import Figure
 import GUIFunctions
-# import SpliceDataFunctions
-# import Learn
 import sys
 from parameterGUI import Ui_parameterSelection
 import multi_param_learn
-# import Learn_original
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from splicing import  Ui_Splicing_mode_Dialog
 
 # **************************** My import *********************************
 
 # **************************** Class Canvas  *****************************
-class Figure_Canvas(FigureCanvas):   # 通过继承FigureCanvas类，使得该类既是一个PyQt5的Qwidget，又是一个matplotlib的FigureCanvas，这是连接pyqt5与matplot                                          lib的关键
+class Figure_Canvas(FigureCanvas):           
 
     def __init__(self, parent=None, width=3.28, height=2, dpi=100):
-        fig = Figure(figsize=(width, height), dpi=dpi)  # 创建一个Figure，注意：该Figure为matplotlib下的figure，不是matplotlib.pyplot下面的figure
+        fig = Figure(figsize=(width, height), dpi=dpi)  #
 
-        FigureCanvas.__init__(self, fig) # 初始化父类
+        FigureCanvas.__init__(self, fig) 
         FigureCanvas.updateGeometry(self)
         self.setParent(parent)
 
         # Figure_Canvas.set_window_title(self,"hello")
 
-        self.axes = fig.add_subplot(111) # 调用figure下面的add_subplot方法，类似于matplotlib.pyplot下面的subplot方法
+        self.axes = fig.add_subplot(111) 
 
     def test(self,a):
         self.axes.plot(a)
@@ -436,10 +433,10 @@ class Ui_DroneGUI(QWidget):
 
         # a = SpliceDataFunctions.getTSData(self.readedFileList[0])
         self.dr.test(a)
-        self.graphicscene = QtWidgets.QGraphicsScene()  # 第三步，创建一个QGraphicsScene，因为加载的图形（FigureCanvas）不能直接放到graphicview控件中，必须先放到graphicScene，然后再把graphicscene放到graphicview中
-        self.graphicscene.addWidget(self.dr)  # 第四步，把图形放到QGraphicsScene中，注意：图形是作为一个QWidget放到QGraphicsScene中的
-        self.graphicsView.setScene(self.graphicscene)  # 第五步，把QGraphicsScene放入QGraphicsView
-        self.graphicsView.show()  # 最后，调用show方法呈现图形！Voila!!
+        self.graphicscene = QtWidgets.QGraphicsScene()  
+        self.graphicscene.addWidget(self.dr)  
+        self.graphicsView.setScene(self.graphicscene)  
+        self.graphicsView.show()  # Voila!!
         # self.graphicsView.setAutoFillBackground()
 
         # self.setCentralWidget(self.graphicsView)
