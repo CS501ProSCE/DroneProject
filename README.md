@@ -2,6 +2,8 @@
 
 ## Data file definitions
 
+These are the data libraries that have been built to test with. The current code depends on a label dictionary which is compatible with Data2 and beyond. 
+
 ### Data
 This is the first sample that was collected with just impacts and simualted wind. Both were singular in direction.
 ![data](docs/data.png)
