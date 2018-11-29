@@ -18,5 +18,9 @@ This is a reduced data set containing 8 of each sample from Data2.
 
 
 ### Data5
-This is a reduced data set containing only hover and impact data, with gust data removed.
+This is a reduced data set with 8 samples of each containing only hover and impact data, with gust data removed.
 ![data5](docs/data5.PNG)
+
+### Data6
+This is a reduced data set containing 16 of each sample from Data2.
+![data4](docs/data6.PNG)
