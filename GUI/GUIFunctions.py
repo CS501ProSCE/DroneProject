@@ -64,13 +64,16 @@ def csvParaExtract(file_name,para_name):
                     else:
                         mavlink_data[typ][param].append(float(row[mavlink_index[typ][param]-1]))
     data = []
+    count = 0
     for typ in range(len(mavlink_types)):
         for param in range(len(mavlink_param[typ])):
             if mavlink_param[typ][param] == para_name:
-                for i in range(len(mavlink_data[typ][param])):
-                    data.append(mavlink_data[typ][param][i])
-                rate = mavlink_rate[typ]
-                mav_type = mavlink_types[typ]
+                if count == 0:
+                    for i in range(len(mavlink_data[typ][param])):
+                        data.append(mavlink_data[typ][param][i])
+                    rate = mavlink_rate[typ]
+                    count = count + 1
+                    mav_type = mavlink_types[typ]
 
     print("Done collecting "+para_name+" data!")
     return data,rate,mav_type
