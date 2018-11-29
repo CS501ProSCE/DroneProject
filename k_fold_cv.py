@@ -23,6 +23,7 @@ from sklearn.metrics import classification_report, confusion_matrix, precision_s
 
 
 def k_fold_cross_val(k_list,train,label,folds):
+   
     #Randomly shuffle the data and label in to the same sequence 
     seed = np.arange(train.shape[0])
     np.random.shuffle(seed)
@@ -32,7 +33,8 @@ def k_fold_cross_val(k_list,train,label,folds):
     k_scores = [] #averaged scores for each k value, num of scores = num of K
     
     #we want to split train data into test and train
-    label_name = {1:'Hover', 2:'Impact (tapping)', 3:'Wind'}
+    label_name = {1:'Hover', 2:'Impact (Front Left)', 3:'Impact (Front Right)', 4:'Impact (Back Left)', 5:'Impact (Back Right)', 
+                  6:'Gust (from Left)', 7:'Gust (from Right)', 8: 'Gust (from front)' }
     clf = KnnDtw(n_neighbors=1, max_warping_window=100) #Initialize classifier
     kf = KFold(n_splits=folds)
     kf.get_n_splits(train)
@@ -54,8 +56,11 @@ def k_fold_cross_val(k_list,train,label,folds):
         score = np.average(scores) #averages the fold scores to a single socre for the k 
         k_scores.append(score)
     #Plot the average accuracy score for each k, recommend a besk (highest accuracy) k
+    k_best = k_list[np.argmax(k_scores)]
+
     plt.bar(k_list, k_scores,width=0.2)
     plt.xlabel('k (nearest neighbors)')
     plt.ylabel('Accuracy (average)')
     plt.xticks(k_list)
-    print('Best k value from list is:',k_list[np.argmax(k_scores)])
+    print('Best k value from list is:',k_best)
+    return k_best
