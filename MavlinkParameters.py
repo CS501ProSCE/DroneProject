@@ -68,13 +68,13 @@ mavlink_rate.append(rate)
 #mavlink_rate.append(rate)
 
 #mavlink_global_position_int_t
-#mavlink_types.append("mavlink_global_position_int_t")
-#rate = 9.0
-#param = ["timestamp", "time_boot_ms","lat","lon","alt","relative_alt","vx","vy","vz","hdg"]
-#index = [1,12,14,16,18,20,22,24,26,28]
-#mavlink_param.append(param)
-#mavlink_index.append(index)
-#mavlink_rate.append(rate)
+mavlink_types.append("mavlink_global_position_int_t")
+rate = 9.0
+param = ["timestamp", "time_boot_ms","lat","lon","alt","relative_alt","vx","vy","vz","hdg"]
+index = [1,12,14,16,18,20,22,24,26,28]
+mavlink_param.append(param)
+mavlink_index.append(index)
+mavlink_rate.append(rate)
 
 #mavlink_gps_raw_int_t
 #mavlink_types.append("mavlink_gps_raw_int_t")
