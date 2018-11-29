@@ -23,4 +23,4 @@ This is a reduced data set with 8 samples of each containing only hover and impa
 
 ### Data6
 This is a reduced data set containing 16 of each sample from Data2.
-![data4](docs/data6.PNG)
+![data6](docs/data6.PNG)
