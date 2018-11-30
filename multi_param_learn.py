@@ -30,7 +30,7 @@ from k_fold_cv import k_fold_cross_val
 
 
 "let's try to create a feature vector with multiple parameters"
-def multi_param_learn(param_list,param_weights,datapath):
+def multi_param_learn(param_list,param_weights,k_value,datapath):
     
     start_time = time.time()
     #this is the list that will store labels returned from each param before aggregating 
@@ -39,6 +39,9 @@ def multi_param_learn(param_list,param_weights,datapath):
         if len(param_list) != len(param_weights):
             raise Exception('When using weights, there must one weight for each parameter!')
         para_weights = dict(zip(param_list,param_weights))
+    
+    para_k = dict(zip(param_list,k_value))
+    
     for dataparam in param_list:
         
         trainingdatafile =  datapath + 'train_' + dataparam + '.txt'
@@ -120,7 +123,8 @@ def multi_param_learn(param_list,param_weights,datapath):
         #    plt.tight_layout()
         
         #Analyze dataset
-        m = KnnDtw(n_neighbors=4, max_warping_window=100)
+        print('Algorithm running for param %s with k value %i'%(dataparam,para_k[dataparam]))
+        m = KnnDtw(n_neighbors=para_k[dataparam], max_warping_window=100)
         m.fit(x_train, y_train)
         label, proba = m.predict(x_test)
         #get the weight for this parameter
@@ -184,11 +188,14 @@ def multi_param_learn(param_list,param_weights,datapath):
     _ = plt.yticks(range(9), [l for l in labels.values()])
     #print how long this function ran
     print("Runtime was %s seconds" % (time.time() - start_time))
+    
 #testing
-plist = ['mavlink_raw_imu_t_Zaccel']#,'mavlink_raw_imu_t_Zaccel']
-#pw = 
+paramlist = ['mavlink_ahrs2_t_roll','mavlink_ahrs2_t_pitch','mavlink_raw_imu_t_XGyro','mavlink_raw_imu_t_YGyro','mavlink_attitude_t_roll rate']
+paramweight = None
+paramk = [1,1,4,1,4]
 
-multi_param_learn(['mavlink_raw_imu_t_XMag','mavlink_attitude_t_yaw angle'],[0.2,0.3] ,'Data2/')
+multi_param_learn(paramlist,paramweight,paramk,'Data6/')
+
 #multi_param_learn(['mavlink_raw_imu_t_Xaccel'],None,'Data2/')
 #multi_param_learn(['mavlink_raw_imu_t_Yaccel'],None,'Data2/')
 #multi_param_learn(['mavlink_raw_imu_t_ZGyro'],None,'Data2/')
