@@ -20,8 +20,10 @@ from knndtw import KnnDtw
 from knndtw import ProgressBar
 from k_fold_cv import k_fold_cross_val
 
-dataset = 'Data2/'
-dataparam = 'mavlink_raw_imu_t_YMag'
+dataset = 'Data6/'
+dataparam = 'mavlink_attitude_t_roll angle'
+n_neighbors = 1
+max_warping_window=100
 
 plotdata = False
 
@@ -105,7 +107,7 @@ if(plotdata):
         
 
 #Analyze dataset
-m = KnnDtw(n_neighbors=1, max_warping_window=500)
+m = KnnDtw(n_neighbors, max_warping_window)
 m.fit(x_train,y_train)
 label, proba = m.predict(x_test)
 
